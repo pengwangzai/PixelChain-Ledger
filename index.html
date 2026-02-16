@@ -106,6 +106,17 @@
             100% { transform: translate(0,0); }
         }
 
+        /* Pixel Numerical Jump Animation */
+        @keyframes pixel-value-jump {
+            0% { transform: translate(0); }
+            33% { transform: translate(2px, -2px); filter: brightness(1.5); }
+            66% { transform: translate(-2px, 2px); filter: contrast(1.5); }
+            100% { transform: translate(0); }
+        }
+        .pixel-value-jump {
+            animation: pixel-value-jump 0.15s steps(3);
+        }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-secondary); }
         ::-webkit-scrollbar-thumb { background: var(--accent); }

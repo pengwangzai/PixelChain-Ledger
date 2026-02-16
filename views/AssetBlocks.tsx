@@ -7,6 +7,9 @@ export const AssetBlocks: React.FC = () => {
   const { state, addBlock, updateBlock, deleteBlock, takeSnapshot } = usePixelStore();
   const [isAdding, setIsAdding] = useState(false);
   const [newBlock, setNewBlock] = useState({ name: '', type: AssetType.CASH, balance: 0, icon: '💰' });
+  
+  // Track jumping state for each block
+  const [jumpingNodes, setJumpingNodes] = useState<Record<string, boolean>>({});
 
   const handleAdd = () => {
     if (newBlock.name) {
@@ -22,6 +25,15 @@ export const AssetBlocks: React.FC = () => {
           takeSnapshot(memo || "手动区块同步");
           alert("快照已成功添加至区块链！ // SNAPSHOT_COMMITTED_TO_LEDGER");
       }
+  };
+
+  const onUpdateBalance = (id: string, val: number) => {
+    updateBlock(id, val);
+    // Trigger jump animation
+    setJumpingNodes(prev => ({ ...prev, [id]: true }));
+    setTimeout(() => {
+      setJumpingNodes(prev => ({ ...prev, [id]: false }));
+    }, 150);
   };
 
   const typeLabels: Record<AssetType, string> = {
@@ -180,13 +192,13 @@ export const AssetBlocks: React.FC = () => {
                       <span className="text-[10px] opacity-60 font-mono uppercase">NODE_LIQUIDITY_VALUE</span>
                       <span className="text-[10px] opacity-40 font-mono animate-pulse uppercase">MOD_ENCRYPTED</span>
                   </div>
-                  <div className={`bg-black/20 p-4 border-2 border-opacity-30 border-green-900 group-hover:border-opacity-100 transition-all ${borderClass.replace('pixel-border', 'border')}`}>
+                  <div className={`bg-black/20 p-4 border-2 border-opacity-30 border-green-900 group-hover:border-opacity-100 transition-all ${borderClass.replace('pixel-border', 'border')} ${jumpingNodes[block.id] ? 'pixel-value-jump' : ''}`}>
                       <div className="flex justify-between items-center">
                           <span className="text-2xl opacity-60 font-mono">￥</span>
                           <input 
                               type="number" 
                               value={block.balance}
-                              onChange={e => updateBlock(block.id, parseFloat(e.target.value) || 0)}
+                              onChange={e => onUpdateBalance(block.id, parseFloat(e.target.value) || 0)}
                               className="bg-transparent border-none focus:outline-none text-3xl font-bold text-white text-right w-full font-mono tracking-tighter"
                           />
                       </div>
