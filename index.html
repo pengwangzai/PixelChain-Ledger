@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>像素账本 - Pixel Ledger</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Classic Theme (Default) */
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #0f3460;
+            --accent: #00ff41;
+            --accent-glow: rgba(0, 255, 65, 0.4);
+            --text-main: #00ff41;
+            --border-color: #00ff41;
+            --danger: #ff0000;
+            --warning: #ffaa00;
+            --purple: #bc13fe;
+            --blue: #4e9afe;
+        }
+
+        [data-theme='NEON'] {
+            --bg-primary: #050505;
+            --bg-secondary: #121212;
+            --accent: #bc13fe;
+            --accent-glow: rgba(188, 19, 254, 0.4);
+            --text-main: #e0e0e0;
+            --border-color: #bc13fe;
+            --blue: #00d2ff;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            overflow-x: hidden;
+            image-rendering: pixelated;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* CRT Scanline Effect */
+        .crt-active::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 9999;
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.9; }
+            100% { opacity: 0.97; }
+        }
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+        }
+
+        .pixel-border {
+            box-shadow: 0 4px 0 -2px var(--bg-primary), 0 -4px 0 -2px var(--bg-primary), 
+                        4px 0 0 -2px var(--bg-primary), -4px 0 0 -2px var(--bg-primary), 
+                        0 0 0 2px var(--accent);
+        }
+
+        .pixel-border-blue {
+            box-shadow: 0 4px 0 -2px var(--bg-primary), 0 -4px 0 -2px var(--bg-primary), 
+                        4px 0 0 -2px var(--bg-primary), -4px 0 0 -2px var(--bg-primary), 
+                        0 0 0 2px var(--blue);
+        }
+
+        .pixel-border-purple {
+            box-shadow: 0 4px 0 -2px var(--bg-primary), 0 -4px 0 -2px var(--bg-primary), 
+                        4px 0 0 -2px var(--bg-primary), -4px 0 0 -2px var(--bg-primary), 
+                        0 0 0 2px var(--purple);
+        }
+
+        .pixel-border-red {
+            box-shadow: 0 4px 0 -2px var(--bg-primary), 0 -4px 0 -2px var(--bg-primary), 
+                        4px 0 0 -2px var(--bg-primary), -4px 0 0 -2px var(--bg-primary), 
+                        0 0 0 2px var(--danger);
+        }
+
+        @keyframes glitch {
+            0% { clip-path: inset(80% 0 0 0); transform: translate(-2px, 2px); }
+            10% { clip-path: inset(10% 0 70% 0); transform: translate(2px, -2px); }
+            100% { clip-path: inset(80% 0 0 0); transform: translate(-2px, 2px); }
+        }
+        .glitch-hover:hover {
+            animation: glitch 0.3s infinite linear alternate-reverse;
+        }
+
+        .hover-shake:hover {
+            animation: pixel-shake 0.1s infinite;
+        }
+        @keyframes pixel-shake {
+            0% { transform: translate(0,0); }
+            50% { transform: translate(1px, -1px); }
+            100% { transform: translate(0,0); }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+        .recharts-text { font-family: 'VT323', monospace !important; fill: var(--accent) !important; }
+        .recharts-cartesian-grid line { stroke: var(--bg-secondary) !important; opacity: 0.5; }
+    </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@^19.2.4",
+        "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+        "react/": "https://esm.sh/react@^19.2.4/",
+        "@google/genai": "https://esm.sh/@google/genai@^1.41.0",
+        "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+        "recharts": "https://esm.sh/recharts@^3.7.0",
+        "dompurify": "https://esm.sh/dompurify@^3.0.6"
+      }
+    }
+    </script>
+</head>
+<body class="crt-active crt-flicker">
+    <div id="root"></div>
+</body>
+</html>
